@@ -1,0 +1,309 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Krul API",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "CartService"
+    }
+  ],
+  "host": "localhost:8083",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/cart/add": {
+      "post": {
+        "summary": "Добавить в корзину",
+        "operationId": "CartService_Add",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/cartAddProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/cartAddProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CartService"
+        ]
+      }
+    },
+    "/v1/cart/delete": {
+      "post": {
+        "summary": "Удалить из корзины",
+        "operationId": "CartService_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/cartDeleteProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/cartDeleteProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CartService"
+        ]
+      }
+    },
+    "/v1/cart/user/{id}": {
+      "get": {
+        "summary": "Получить корзину по ID пользователя",
+        "operationId": "CartService_GetUserCart",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/cartGetUserCartResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "ID пользователя",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "CartService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "cartAddProductRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "title": "ID пользователя, который добавляет товар в корзину"
+        },
+        "product": {
+          "$ref": "#/definitions/cartCartProductInfo",
+          "title": "Структура продукта в корзине"
+        }
+      },
+      "title": "Информация для добавления продукта в корзину"
+    },
+    "cartAddProductResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "ID продукта"
+        }
+      },
+      "title": "Ответ на добавление продукта в корзину"
+    },
+    "cartCart": {
+      "type": "object",
+      "properties": {
+        "cartId": {
+          "type": "string",
+          "title": "ID корзины"
+        },
+        "userId": {
+          "type": "string",
+          "title": "ID пользователя"
+        },
+        "cartProduct": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/cartCartProduct"
+          },
+          "title": "Продукты в корзине"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Дата создания корзины"
+        },
+        "totalPrice": {
+          "type": "integer",
+          "format": "int64",
+          "title": "Итоговая цена"
+        }
+      },
+      "title": "Структура корзины"
+    },
+    "cartCartProduct": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "ID продукта"
+        },
+        "info": {
+          "$ref": "#/definitions/cartCartProductInfo",
+          "title": "Информация о продукте"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Когда был добавлен"
+        }
+      },
+      "title": "Продукт в корзине"
+    },
+    "cartCartProductInfo": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "title": "ID самого продукта"
+        },
+        "name": {
+          "type": "string",
+          "title": "Название продукта"
+        },
+        "slug": {
+          "type": "string",
+          "title": "Slug продукта"
+        },
+        "image": {
+          "type": "string",
+          "title": "Первое изображение продукта"
+        },
+        "price": {
+          "type": "integer",
+          "format": "int64",
+          "title": "Цена продукта"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "title": "Количество продукта"
+        }
+      },
+      "title": "Информация о продукте в корзине"
+    },
+    "cartDeleteProductInfo": {
+      "type": "object",
+      "properties": {
+        "productID": {
+          "type": "string",
+          "title": "ID продукта, который мы хотим удалить"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "title": "Количество удаляемого товара"
+        }
+      },
+      "title": "Информация для удаления продукта из корзины"
+    },
+    "cartDeleteProductRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "title": "ID пользователя, который удаляет товар из корзины"
+        },
+        "info": {
+          "$ref": "#/definitions/cartDeleteProductInfo",
+          "title": "Информация о продукте, который нужно удалить"
+        }
+      },
+      "title": "Информация для удаления товара из корзины"
+    },
+    "cartDeleteProductResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "title": "Результат операции"
+        }
+      },
+      "title": "Ответ на удаление продукта из корзины"
+    },
+    "cartGetUserCartResponse": {
+      "type": "object",
+      "properties": {
+        "cart": {
+          "$ref": "#/definitions/cartCart",
+          "title": "Корзина"
+        }
+      },
+      "title": "Ответ на получение корзины пользователя"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

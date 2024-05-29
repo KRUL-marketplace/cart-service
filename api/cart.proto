@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package cart;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/KRUL-marketplace/krul_backend/internal/cart_service;cart_service";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Krul API"
+    version: "1.0.0"
+  };
+
+  host: "localhost:8083",
+  schemes: HTTP,
+  schemes: HTTPS,
+  consumes: "application/json",
+  produces: "application/json"
+};
+
+// Описание сервиса CartService
+service CartService {
+  // Добавить в корзину
+  rpc Add(AddProductRequest) returns (AddProductResponse) {
+    option (google.api.http) = {
+      post: "/v1/cart/add",
+      body: "*"
+    };
+  }
+  // Удалить из корзины
+  rpc Delete(DeleteProductRequest) returns (DeleteProductResponse) {
+    option (google.api.http) = {
+      post: "/v1/cart/delete",
+      body: "*"
+    };
+  }
+  // Получить корзину по ID пользователя
+  rpc GetUserCart(GetUserCartRequest) returns (GetUserCartResponse) {
+    option (google.api.http) = {
+      get: "/v1/cart/user/{id}"
+    };
+  }
+}
+
+// Информация для добавления продукта в корзину
+message AddProductRequest {
+  string user_id = 1; // ID пользователя, который добавляет товар в корзину
+  CartProductInfo product = 2; // Структура продукта в корзине
+}
+
+// Ответ на добавление продукта в корзину
+message AddProductResponse {
+  string id = 1; // ID продукта
+}
+
+// Ответ на удаление продукта из корзины
+message DeleteProductResponse {
+  string message = 1; // Результат операции
+}
+
+// Информация для удаления товара из корзины
+message DeleteProductRequest {
+  string user_id = 1; // ID пользователя, который удаляет товар из корзины
+  DeleteProductInfo info = 2; // Информация о продукте, который нужно удалить
+}
+
+// Инофрмация для получения корзины пользователя
+message GetUserCartRequest {
+  string id = 1; // ID пользователя
+}
+
+// Ответ на получение корзины пользователя
+message GetUserCartResponse {
+  Cart cart = 1; // Корзина
+}
+
+// Структура корзины
+message Cart {
+  string cart_id = 1; // ID корзины
+  string user_id = 2; // ID пользователя
+  repeated CartProduct cart_product = 3; // Продукты в корзине
+  google.protobuf.Timestamp created_at = 4; // Дата создания корзины
+  uint32 total_price = 5; // Итоговая цена
+}
+
+// Продукт в корзине
+message CartProduct {
+  string id = 1; // ID продукта
+  CartProductInfo info = 2; // Информация о продукте
+  google.protobuf.Timestamp created_at = 3; // Когда был добавлен
+}
+
+// Информация о продукте в корзине
+message CartProductInfo {
+  string productID = 1; // ID самого продукта
+  string name = 2; // Название продукта
+  string slug = 3; // Slug продукта
+  string image = 4; // Первое изображение продукта
+  uint32 price = 5; // Цена продукта
+  uint32 quantity = 6; // Количество продукта
+}
+
+// Информация для удаления продукта из корзины
+message DeleteProductInfo {
+  string productID = 1; // ID продукта, который мы хотим удалить
+  uint32 quantity = 2; // Количество удаляемого товара
+}
