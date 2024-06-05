@@ -5,7 +5,6 @@ import (
 	"cart-service/internal/repository/model"
 	"context"
 	sq "github.com/Masterminds/squirrel"
-	"log"
 	"time"
 )
 
@@ -28,7 +27,6 @@ func (r *repo) Delete(ctx context.Context, req *model.DeleteProductRequest) (str
 
 	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&cartID)
 	if err != nil {
-		log.Printf("[DeleteProduct] error finding cart for user %s: %v", req.UserID, err)
 		return "", err
 	}
 
@@ -50,7 +48,6 @@ func (r *repo) Delete(ctx context.Context, req *model.DeleteProductRequest) (str
 
 	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&currentQuantity)
 	if err != nil {
-		log.Printf("[DeleteProduct] error finding product %s in cart %s: %v", req.ProductID, cartID, err)
 		return "", err
 	}
 
