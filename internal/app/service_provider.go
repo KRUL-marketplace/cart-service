@@ -6,9 +6,13 @@ import (
 	"cart-service/client/db/transaction"
 	"cart-service/internal/api"
 	"cart-service/internal/config"
+	"cart-service/internal/connector/product_catalog_service"
 	"cart-service/internal/repository"
 	"cart-service/internal/service"
 	"context"
+	product_service "github.com/KRUL-marketplace/product-catalog-service/pkg/product-catalog-service"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 )
 
@@ -16,15 +20,18 @@ type serviceProvider struct {
 	cartRepository repository.Repository
 	cartService    service.CartService
 
-	grpcConfig    config.GRPCConfig
-	httpConfig    config.HTTPConfig
-	pgConfig      config.PGConfig
-	swaggerConfig config.SwaggerConfig
+	grpcConfig                      config.GRPCConfig
+	httpConfig                      config.HTTPConfig
+	pgConfig                        config.PGConfig
+	swaggerConfig                   config.SwaggerConfig
+	productCatalogServiceGRPCConfig config.ProductCatalogServiceGRPCConfig
 
 	dbClient  db.Client
 	txManager db.TxManager
 
 	cartImpl *api.Implementation
+
+	productCatalogServiceClient product_catalog_service.ProductCatalogServiceClient
 }
 
 func newServiceProvider() *serviceProvider {
@@ -83,9 +90,22 @@ func (s *serviceProvider) SwaggerConfig() config.SwaggerConfig {
 	return s.swaggerConfig
 }
 
+func (s *serviceProvider) ProductCatalogServiceGRPCConfig() config.ProductCatalogServiceGRPCConfig {
+	if s.productCatalogServiceGRPCConfig == nil {
+		cfg, err := config.NewProductCatalogServiceGRPCConfig()
+		if err != nil {
+			log.Fatalf("failed to get product catalog service grpc config: %s", err.Error())
+		}
+
+		s.productCatalogServiceGRPCConfig = cfg
+	}
+
+	return s.productCatalogServiceGRPCConfig
+}
+
 func (s *serviceProvider) CartRepository(ctx context.Context) repository.Repository {
 	if s.cartRepository == nil {
-		s.cartRepository = repository.NewRepository(s.DBClient(ctx))
+		s.cartRepository = repository.NewRepository(s.DBClient(ctx), s.ProductCatalogServiceClient(ctx))
 	}
 
 	return s.cartRepository
@@ -134,4 +154,20 @@ func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
 	}
 
 	return s.txManager
+}
+
+func (s *serviceProvider) ProductCatalogServiceClient(ctx context.Context) product_catalog_service.ProductCatalogServiceClient {
+	if s.productCatalogServiceClient == nil {
+		conn, err := grpc.DialContext(ctx,
+			s.ProductCatalogServiceGRPCConfig().Address(), grpc.WithTransportCredentials(insecure.NewCredentials()))
+		if err != nil {
+			log.Fatalf("product catalog service client init error")
+		}
+
+		s.productCatalogServiceClient = product_catalog_service.NewProductCatalogServiceClient(
+			product_service.NewProductCatalogServiceClient(conn),
+		)
+	}
+
+	return s.productCatalogServiceClient
 }

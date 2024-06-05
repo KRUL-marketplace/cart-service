@@ -128,9 +128,14 @@
           "type": "string",
           "title": "ID пользователя, который добавляет товар в корзину"
         },
-        "product": {
-          "$ref": "#/definitions/cartCartProductInfo",
-          "title": "Структура продукта в корзине"
+        "productId": {
+          "type": "string",
+          "title": "ID продукта"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "title": "Количество товара"
         }
       },
       "title": "Информация для добавления продукта в корзину"
@@ -145,6 +150,49 @@
       },
       "title": "Ответ на добавление продукта в корзину"
     },
+    "cartBrand": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "title": "Идентификатор бренда"
+        },
+        "info": {
+          "$ref": "#/definitions/cartBrandInfo",
+          "title": "Информация о бренде"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Время создания бренда"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Время последнего обновления бренда"
+        }
+      },
+      "title": "Бренд"
+    },
+    "cartBrandInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Наименование бренда"
+        },
+        "slug": {
+          "type": "string",
+          "title": "Уникальный идентификатор бренда"
+        },
+        "description": {
+          "type": "string",
+          "title": "Описание бренда"
+        }
+      },
+      "title": "Информация для создания нового бренда"
+    },
     "cartCart": {
       "type": "object",
       "properties": {
@@ -156,7 +204,7 @@
           "type": "string",
           "title": "ID пользователя"
         },
-        "cartProduct": {
+        "products": {
           "type": "array",
           "items": {
             "type": "object",
@@ -169,6 +217,11 @@
           "format": "date-time",
           "title": "Дата создания корзины"
         },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Дата обновления"
+        },
         "totalPrice": {
           "type": "integer",
           "format": "int64",
@@ -180,18 +233,32 @@
     "cartCartProduct": {
       "type": "object",
       "properties": {
-        "id": {
+        "itemId": {
           "type": "string",
-          "title": "ID продукта"
+          "title": "ID продукта в корзине"
+        },
+        "productId": {
+          "type": "string",
+          "title": "ID самого продукта"
         },
         "info": {
           "$ref": "#/definitions/cartCartProductInfo",
           "title": "Информация о продукте"
         },
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "title": "Количество продукта в корзине"
+        },
         "createdAt": {
           "type": "string",
           "format": "date-time",
           "title": "Когда был добавлен"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Когда был обновлен"
         }
       },
       "title": "Продукт в корзине"
@@ -199,10 +266,6 @@
     "cartCartProductInfo": {
       "type": "object",
       "properties": {
-        "productID": {
-          "type": "string",
-          "title": "ID самого продукта"
-        },
         "name": {
           "type": "string",
           "title": "Название продукта"
@@ -220,28 +283,12 @@
           "format": "int64",
           "title": "Цена продукта"
         },
-        "quantity": {
-          "type": "integer",
-          "format": "int64",
-          "title": "Количество продукта"
+        "brand": {
+          "$ref": "#/definitions/cartBrand",
+          "title": "Бренд продукта"
         }
       },
       "title": "Информация о продукте в корзине"
-    },
-    "cartDeleteProductInfo": {
-      "type": "object",
-      "properties": {
-        "productID": {
-          "type": "string",
-          "title": "ID продукта, который мы хотим удалить"
-        },
-        "quantity": {
-          "type": "integer",
-          "format": "int64",
-          "title": "Количество удаляемого товара"
-        }
-      },
-      "title": "Информация для удаления продукта из корзины"
     },
     "cartDeleteProductRequest": {
       "type": "object",
@@ -250,9 +297,14 @@
           "type": "string",
           "title": "ID пользователя, который удаляет товар из корзины"
         },
-        "info": {
-          "$ref": "#/definitions/cartDeleteProductInfo",
-          "title": "Информация о продукте, который нужно удалить"
+        "productId": {
+          "type": "string",
+          "title": "ID продукта"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int64",
+          "title": "Количество товара"
         }
       },
       "title": "Информация для удаления товара из корзины"

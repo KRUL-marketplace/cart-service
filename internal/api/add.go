@@ -7,7 +7,7 @@ import (
 )
 
 func (i *Implementation) Add(ctx context.Context, req *desc.AddProductRequest) (*desc.AddProductResponse, error) {
-	id, err := i.cartService.Add(ctx, req.GetUserId(), converter.ToCartProductInfoFromDesc(req.GetProduct()))
+	id, err := i.cartService.Add(ctx, converter.ToAddProductRequestFromDesc(req))
 	if err != nil {
 		return nil, err
 	}

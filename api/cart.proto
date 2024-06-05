@@ -48,7 +48,8 @@ service CartService {
 // Информация для добавления продукта в корзину
 message AddProductRequest {
   string user_id = 1; // ID пользователя, который добавляет товар в корзину
-  CartProductInfo product = 2; // Структура продукта в корзине
+  string product_id = 2; // ID продукта
+  uint32 quantity = 3; // Количество товара
 }
 
 // Ответ на добавление продукта в корзину
@@ -64,7 +65,8 @@ message DeleteProductResponse {
 // Информация для удаления товара из корзины
 message DeleteProductRequest {
   string user_id = 1; // ID пользователя, который удаляет товар из корзины
-  DeleteProductInfo info = 2; // Информация о продукте, который нужно удалить
+  string product_id = 2; // ID продукта
+  uint32 quantity = 3; // Количество товара
 }
 
 // Инофрмация для получения корзины пользователя
@@ -81,30 +83,49 @@ message GetUserCartResponse {
 message Cart {
   string cart_id = 1; // ID корзины
   string user_id = 2; // ID пользователя
-  repeated CartProduct cart_product = 3; // Продукты в корзине
+  repeated CartProduct products = 3; // Продукты в корзине
   google.protobuf.Timestamp created_at = 4; // Дата создания корзины
-  uint32 total_price = 5; // Итоговая цена
+  google.protobuf.Timestamp updated_at = 5; // Дата обновления
+  uint32 total_price = 6; // Итоговая цена
 }
 
 // Продукт в корзине
 message CartProduct {
-  string id = 1; // ID продукта
-  CartProductInfo info = 2; // Информация о продукте
-  google.protobuf.Timestamp created_at = 3; // Когда был добавлен
+  string item_id = 1; // ID продукта в корзине
+  string product_id = 2; // ID самого продукта
+  CartProductInfo info = 3; // Информация о продукте
+  uint32 quantity = 4; // Количество продукта в корзине
+  google.protobuf.Timestamp created_at = 5; // Когда был добавлен
+  google.protobuf.Timestamp updated_at = 6; // Когда был обновлен
 }
 
 // Информация о продукте в корзине
 message CartProductInfo {
-  string productID = 1; // ID самого продукта
-  string name = 2; // Название продукта
-  string slug = 3; // Slug продукта
-  string image = 4; // Первое изображение продукта
-  uint32 price = 5; // Цена продукта
-  uint32 quantity = 6; // Количество продукта
+  string name = 1; // Название продукта
+  string slug = 2; // Slug продукта
+  string image =3; // Первое изображение продукта
+  uint32 price = 4; // Цена продукта
+  Brand brand = 5; // Бренд продукта
 }
 
 // Информация для удаления продукта из корзины
 message DeleteProductInfo {
   string productID = 1; // ID продукта, который мы хотим удалить
   uint32 quantity = 2; // Количество удаляемого товара
+}
+
+// Бренд
+message Brand {
+  uint32 id = 1; // Идентификатор бренда
+  BrandInfo info = 2; // Информация о бренде
+  google.protobuf.Timestamp created_at = 3; // Время создания бренда
+  google.protobuf.Timestamp updated_at = 4; // Время последнего обновления бренда
+}
+
+
+// Информация для создания нового бренда
+message BrandInfo {
+  string name = 1; // Наименование бренда
+  string slug = 2; // Уникальный идентификатор бренда
+  string description = 3; // Описание бренда
 }

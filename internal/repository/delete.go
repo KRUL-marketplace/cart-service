@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-func (r *repo) Delete(ctx context.Context, userId string, cartProductInfo *model.DeleteCartProductInfo) (string, error) {
+func (r *repo) Delete(ctx context.Context, req *model.DeleteProductRequest) (string, error) {
 	builder := sq.Select("cart_id").
 		PlaceholderFormat(sq.Dollar).
-		Where(sq.Eq{userIdColumn: userId}).
+		Where(sq.Eq{userIdColumn: req.UserID}).
 		From(tableName)
 
 	query, args, err := builder.ToSql()
@@ -28,7 +28,7 @@ func (r *repo) Delete(ctx context.Context, userId string, cartProductInfo *model
 
 	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&cartID)
 	if err != nil {
-		log.Printf("[DeleteProduct] error finding cart for user %s: %v", userId, err)
+		log.Printf("[DeleteProduct] error finding cart for user %s: %v", req.UserID, err)
 		return "", err
 	}
 
@@ -36,7 +36,7 @@ func (r *repo) Delete(ctx context.Context, userId string, cartProductInfo *model
 	builderSelect := sq.Select("quantity").
 		PlaceholderFormat(sq.Dollar).
 		From("cart_items").
-		Where(sq.Eq{"cart_id": cartID, "product_id": cartProductInfo.ProductId})
+		Where(sq.Eq{"cart_id": cartID, "product_id": req.ProductID})
 
 	query, args, err = builderSelect.ToSql()
 	if err != nil {
@@ -50,17 +50,17 @@ func (r *repo) Delete(ctx context.Context, userId string, cartProductInfo *model
 
 	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&currentQuantity)
 	if err != nil {
-		log.Printf("[DeleteProduct] error finding product %s in cart %s: %v", cartProductInfo.ProductId, cartID, err)
+		log.Printf("[DeleteProduct] error finding product %s in cart %s: %v", req.ProductID, cartID, err)
 		return "", err
 	}
 
-	if currentQuantity > cartProductInfo.Quantity {
-		newQuantity := currentQuantity - cartProductInfo.Quantity
+	if currentQuantity > req.Quantity {
+		newQuantity := currentQuantity - req.Quantity
 		builderUpdate := sq.Update("cart_items").
 			PlaceholderFormat(sq.Dollar).
 			Set("quantity", newQuantity).
 			Set("updated_at", time.Now()).
-			Where(sq.Eq{"cart_id": cartID, "product_id": cartProductInfo.ProductId})
+			Where(sq.Eq{"cart_id": cartID, "product_id": req.ProductID})
 
 		query, args, err = builderUpdate.ToSql()
 		if err != nil {
@@ -77,10 +77,9 @@ func (r *repo) Delete(ctx context.Context, userId string, cartProductInfo *model
 			return "", err
 		}
 	} else {
-		// Delete the product from the cart
 		builderDelete := sq.Delete("cart_items").
 			PlaceholderFormat(sq.Dollar).
-			Where(sq.Eq{"cart_id": cartID, "product_id": cartProductInfo.ProductId})
+			Where(sq.Eq{"cart_id": cartID, "product_id": req.ProductID})
 
 		query, args, err = builderDelete.ToSql()
 		if err != nil {
@@ -88,7 +87,7 @@ func (r *repo) Delete(ctx context.Context, userId string, cartProductInfo *model
 		}
 
 		q = db.Query{
-			Name:     "cart_repository.DeleteProduct",
+			Name:     "cart_repository.DeleteQuantity",
 			QueryRaw: query,
 		}
 
