@@ -6,6 +6,16 @@ command -v docker-compose >/dev/null 2>&1 || { echo >&2 "Docker Compose не у�
 command -v make >/dev/null 2>&1 || { echo >&2 "Make не установлен. Установите Make и попробуйте снова."; exit 1; }
 command -v unzip >/dev/null 2>&1 || { echo >&2 "Unzip не установлен. Установите Unzip и попробуйте снова."; exit 1; }
 
+# Проверка существования сети и создание её, если она не существует
+network_name="product_catalog_network"
+if ! docker network inspect $network_name >/dev/null 2>&1; then
+  echo "Сеть $network_name не существует. Создание сети..."
+  docker network create $network_name
+  echo "Сеть $network_name создана."
+else
+  echo "Сеть $network_name уже существует."
+fi
+
 # Создание .env файла на основе .env.example
 if [ ! -f .env ]; then
   if [ -f .env.example ]; then
