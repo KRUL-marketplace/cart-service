@@ -2,6 +2,7 @@ package repository
 
 import (
 	"cart-service/client/db"
+	"cart-service/internal/connector/product_catalog_service"
 	"cart-service/internal/repository/model"
 	"context"
 )
@@ -24,17 +25,19 @@ const (
 )
 
 type Repository interface {
-	Add(ctx context.Context, userId string, cartProductInfo *model.CartProductInfo) (string, error)
+	Add(ctx context.Context, req *model.AddProductRequest) (string, error)
 	GetUserCart(ctx context.Context, userId string) (*model.Cart, error)
-	Delete(ctx context.Context, userId string, cartProductInfo *model.DeleteCartProductInfo) (string, error)
+	Delete(ctx context.Context, req *model.DeleteProductRequest) (string, error)
 }
 
 type repo struct {
-	db db.Client
+	db                          db.Client
+	productCatalogServiceClient product_catalog_service.ProductCatalogServiceClient
 }
 
-func NewRepository(db db.Client) Repository {
+func NewRepository(db db.Client, productCatalogServiceClient product_catalog_service.ProductCatalogServiceClient) Repository {
 	return &repo{
-		db: db,
+		db:                          db,
+		productCatalogServiceClient: productCatalogServiceClient,
 	}
 }

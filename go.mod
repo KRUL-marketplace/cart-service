@@ -1,6 +1,6 @@
 module cart-service
 
-go 1.22.2
+go 1.22.3
 
 require (
 	github.com/georgysavva/scany v1.2.2
@@ -18,6 +18,7 @@ require (
 )
 
 require (
+	github.com/KRUL-marketplace/product-catalog-service v0.0.0-20240602193456-986bf53b8415 // indirect
 	github.com/Masterminds/squirrel v1.5.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gosimple/slug v1.14.0 // indirect
@@ -37,5 +38,5 @@ require (
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240528184218-531527333157 // indirect
-	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0 // indirect
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.4.0 // indirect
 )

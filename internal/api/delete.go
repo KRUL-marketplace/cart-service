@@ -7,7 +7,7 @@ import (
 )
 
 func (i *Implementation) Delete(ctx context.Context, req *desc.DeleteProductRequest) (*desc.DeleteProductResponse, error) {
-	_, err := i.cartService.Delete(ctx, req.GetUserId(), converter.ToDeleteCartProductInfofromDesc(req.GetInfo()))
+	_, err := i.cartService.Delete(ctx, converter.ToDeleteProductRequestFromDesc(req))
 	if err != nil {
 		return nil, err
 	}

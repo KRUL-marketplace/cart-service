@@ -13,6 +13,6 @@ func (i *Implementation) GetUserCart(ctx context.Context, req *desc.GetUserCartR
 	}
 
 	return &desc.GetUserCartResponse{
-		Cart: converter.ToCartFromService(cart),
+		Cart: converter.ToCartDescFromService(cart),
 	}, nil
 }
