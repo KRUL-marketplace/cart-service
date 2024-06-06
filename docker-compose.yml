@@ -29,7 +29,7 @@ services:
     networks:
       - product_catalog_network
 
-  user-service:
+  cart-service:
     restart: always
     build: .
     depends_on:
@@ -38,5 +38,14 @@ services:
       - "${GRPC_PORT:-5003}:${GRPC_PORT:-5003}"
       - "${HTTP_PORT:-8082}:${HTTP_PORT:-8082}"
       - "${SWAGGER_PORT:-8092}:${SWAGGER_PORT:-8092}"
+    networks:
+      - product_catalog_network
+
+  redis:
+    image: redis:6-alpine
+    env_file:
+      - .env
+    ports:
+      - "${REDIS_PORT:-6370}:6379"
     networks:
       - product_catalog_network

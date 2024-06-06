@@ -6,11 +6,27 @@ import (
 	"cart-service/internal/repository/model"
 	"context"
 	"database/sql"
+	"encoding/json"
 	sq "github.com/Masterminds/squirrel"
+	"github.com/go-redis/redis/v8"
+	"github.com/pkg/errors"
 	"time"
 )
 
+const (
+	REDIS_EXPIRATION = 5 * time.Minute
+)
+
 func (r *repo) GetUserCart(ctx context.Context, userId string) (*model.Cart, error) {
+	cachedCart, err := r.getUserCartFromRedis(ctx, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	if cachedCart != nil {
+		return cachedCart, nil
+	}
+
 	builder := sq.Select(
 		"c.cart_id",
 		"c.user_id",
@@ -119,60 +135,33 @@ func (r *repo) GetUserCart(ctx context.Context, userId string) (*model.Cart, err
 		cart.TotalPrice += cart.Products[i].Quantity * cart.Products[i].Info.Price
 	}
 
+	if err := r.setUserCartToRedis(ctx, userId, &cart); err != nil {
+		return nil, err
+	}
+
 	return &cart, nil
 }
 
-//	q := db.Query{
-//		Name:     "cart_repositry.GetByUserId " + userId,
-//		QueryRaw: query,
-//	}
-//
-//	var cart model.Cart
-//	rows, err := r.db.DB().QueryContext(ctx, q, args...)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	defer rows.Close()
-//
-//	cart.Products = []model.CartProduct{}
-//
-//	var totalPrice uint32
-//	for rows.Next() {
-//		var product model.CartProduct
-//		var productInfo model.CartProductInfo
-//
-//		err := rows.Scan(
-//			&cart.CartID,
-//			&cart.UserID,
-//			&cart.CreatedAt,
-//			&cart.UpdatedAt,
-//			&product.ID,
-//			&productInfo.ProductId,
-//			&productInfo.Quantity,
-//			&productInfo.Name,
-//			&productInfo.Slug,
-//			&productInfo.Image,
-//			&productInfo.Price,
-//			&product.CreatedAt,
-//			&product.UpdatedAt,
-//		)
-//
-//		if err != nil {
-//			return nil, err
-//		}
-//
-//		product.Info = productInfo
-//		cart.Products = append(cart.Products, product)
-//
-//		totalPrice += product.Info.Price * product.Info.Quantity
-//	}
-//
-//	if err = rows.Err(); err != nil {
-//		return nil, err
-//	}
-//
-//	cart.TotalPrice = totalPrice
-//
-//	return &cart, nil
-//}
+func (r *repo) getUserCartFromRedis(ctx context.Context, userId string) (*model.Cart, error) {
+	data, err := r.redisClient.Get(ctx, userId).Result()
+	if errors.Is(err, redis.Nil) {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+
+	var cart model.Cart
+	if err := json.Unmarshal([]byte(data), &cart); err != nil {
+		return nil, err
+	}
+	return &cart, nil
+}
+
+func (r *repo) setUserCartToRedis(ctx context.Context, userId string, cart *model.Cart) error {
+	data, err := json.Marshal(cart)
+	if err != nil {
+		return err
+	}
+
+	return r.redisClient.Set(ctx, userId, data, REDIS_EXPIRATION).Err()
+}

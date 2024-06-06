@@ -5,6 +5,7 @@ import (
 	"cart-service/internal/connector/product_catalog_service"
 	"cart-service/internal/repository/model"
 	"context"
+	"github.com/go-redis/redis/v8"
 )
 
 const (
@@ -32,12 +33,18 @@ type Repository interface {
 
 type repo struct {
 	db                          db.Client
+	redisClient                 redis.Client
 	productCatalogServiceClient product_catalog_service.ProductCatalogServiceClient
 }
 
-func NewRepository(db db.Client, productCatalogServiceClient product_catalog_service.ProductCatalogServiceClient) Repository {
+func NewRepository(
+	db db.Client,
+	redisClient redis.Client,
+	productCatalogServiceClient product_catalog_service.ProductCatalogServiceClient,
+) Repository {
 	return &repo{
 		db:                          db,
+		redisClient:                 redisClient,
 		productCatalogServiceClient: productCatalogServiceClient,
 	}
 }

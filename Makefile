@@ -28,6 +28,7 @@ get-deps:
 	go get -u github.com/lib/pq
 	go get -u github.com/google/uuid
 	go get -u github.com/rakyll/statik
+	go get -u github.com/go-redis/redis/v8
 	go get -u github.com/KRUL-marketplace/product-catalog-service
 
 generate-cart-service-api:

@@ -66,6 +66,10 @@ func (r *repo) Add(ctx context.Context, req *model.AddProductRequest) (string, e
 		return "", err
 	}
 
+	if err := r.delUserCartFromRedis(ctx, req.UserID); err != nil {
+		return "", err
+	}
+
 	return itemID, nil
 }
 
@@ -93,4 +97,8 @@ func (r *repo) createCart(ctx context.Context, userId string) (string, error) {
 	}
 
 	return cartID, nil
+}
+
+func (r *repo) delUserCartFromRedis(ctx context.Context, userID string) error {
+	return r.redisClient.Del(ctx, userID).Err()
 }
