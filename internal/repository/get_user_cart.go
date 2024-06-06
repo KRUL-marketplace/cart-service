@@ -10,7 +10,6 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/go-redis/redis/v8"
 	"github.com/pkg/errors"
-	"log"
 	"time"
 )
 
@@ -146,7 +145,6 @@ func (r *repo) GetUserCart(ctx context.Context, userId string) (*model.Cart, err
 func (r *repo) getUserCartFromRedis(ctx context.Context, userId string) (*model.Cart, error) {
 	data, err := r.redisClient.Get(ctx, userId).Result()
 	if errors.Is(err, redis.Nil) {
-		log.Printf("[MY] FROM DB")
 		return nil, nil
 	} else if err != nil {
 		return nil, err
@@ -156,7 +154,6 @@ func (r *repo) getUserCartFromRedis(ctx context.Context, userId string) (*model.
 	if err := json.Unmarshal([]byte(data), &cart); err != nil {
 		return nil, err
 	}
-	log.Printf("[MY] from redis")
 	return &cart, nil
 }
 
