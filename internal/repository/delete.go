@@ -94,5 +94,9 @@ func (r *repo) Delete(ctx context.Context, req *model.DeleteProductRequest) (str
 		}
 	}
 
+	if err := r.delUserCartFromRedis(ctx, req.UserID); err != nil {
+		return "", err
+	}
+
 	return "", nil
 }

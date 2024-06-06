@@ -11,6 +11,7 @@ import (
 	"cart-service/internal/service"
 	"context"
 	product_service "github.com/KRUL-marketplace/product-catalog-service/pkg/product-catalog-service"
+	"github.com/go-redis/redis/v8"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
@@ -25,6 +26,7 @@ type serviceProvider struct {
 	pgConfig                        config.PGConfig
 	swaggerConfig                   config.SwaggerConfig
 	productCatalogServiceGRPCConfig config.ProductCatalogServiceGRPCConfig
+	redisConfig                     config.RedisConfig
 
 	dbClient  db.Client
 	txManager db.TxManager
@@ -32,6 +34,8 @@ type serviceProvider struct {
 	cartImpl *api.Implementation
 
 	productCatalogServiceClient product_catalog_service.ProductCatalogServiceClient
+
+	redisClient *redis.Client
 }
 
 func newServiceProvider() *serviceProvider {
@@ -103,9 +107,26 @@ func (s *serviceProvider) ProductCatalogServiceGRPCConfig() config.ProductCatalo
 	return s.productCatalogServiceGRPCConfig
 }
 
+func (s *serviceProvider) RedisConfig() config.RedisConfig {
+	if s.redisConfig == nil {
+		cfg, err := config.NewRedisConfig()
+		if err != nil {
+			log.Fatalf("failed to get redis config: %s", err.Error())
+		}
+
+		s.redisConfig = cfg
+	}
+
+	return s.redisConfig
+}
+
 func (s *serviceProvider) CartRepository(ctx context.Context) repository.Repository {
 	if s.cartRepository == nil {
-		s.cartRepository = repository.NewRepository(s.DBClient(ctx), s.ProductCatalogServiceClient(ctx))
+		s.cartRepository = repository.NewRepository(
+			s.DBClient(ctx),
+			s.RedisClient(ctx),
+			s.ProductCatalogServiceClient(ctx),
+		)
 	}
 
 	return s.cartRepository
@@ -146,6 +167,18 @@ func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 	}
 
 	return s.dbClient
+}
+
+func (s *serviceProvider) RedisClient(ctx context.Context) redis.Client {
+	if s.redisClient == nil {
+		s.redisClient = redis.NewClient(&redis.Options{
+			Addr:     s.RedisConfig().Address(),
+			Password: "",
+			DB:       0,
+		})
+	}
+
+	return *s.redisClient
 }
 
 func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
