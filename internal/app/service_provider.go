@@ -1,15 +1,16 @@
 package app
 
 import (
-	"cart-service/client/db"
-	"cart-service/client/db/pg"
-	"cart-service/client/db/transaction"
 	"cart-service/internal/api"
 	"cart-service/internal/config"
 	"cart-service/internal/connector/product_catalog_service"
 	"cart-service/internal/repository"
 	"cart-service/internal/service"
 	"context"
+	"github.com/KRUL-marketplace/common-libs/pkg/client/db"
+	"github.com/KRUL-marketplace/common-libs/pkg/client/db/pg"
+	"github.com/KRUL-marketplace/common-libs/pkg/client/db/transaction"
+	"github.com/KRUL-marketplace/common-libs/pkg/closer"
 	product_service "github.com/KRUL-marketplace/product-catalog-service/pkg/product-catalog-service"
 	"github.com/go-redis/redis/v8"
 	"google.golang.org/grpc"
@@ -163,6 +164,7 @@ func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 			log.Fatalf("ping error: %s", err.Error())
 		}
 
+		closer.Add(cl.Close)
 		s.dbClient = cl
 	}
 

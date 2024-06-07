@@ -5,6 +5,7 @@ import (
 	desc "cart-service/pkg/cart-service"
 	_ "cart-service/statik"
 	"context"
+	"github.com/KRUL-marketplace/common-libs/pkg/closer"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rakyll/statik/fs"
 	"github.com/rs/cors"
@@ -70,6 +71,11 @@ func (a *App) initServiceProvider(ctx context.Context) error {
 }
 
 func (a *App) Run() error {
+	defer func() {
+		closer.CloseAll()
+		closer.Wait()
+	}()
+
 	wg := sync.WaitGroup{}
 	wg.Add(3)
 

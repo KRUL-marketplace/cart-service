@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"cart-service/client/db"
 	"cart-service/internal/repository/model"
 	"context"
+	"github.com/KRUL-marketplace/common-libs/pkg/client/db"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v4"
 	"github.com/pkg/errors"

@@ -1,12 +1,14 @@
 module cart-service
 
-go 1.22.3
+go 1.22.4
 
 require (
-	github.com/georgysavva/scany v1.2.2
+	github.com/KRUL-marketplace/common-libs v0.0.0-20240607183359-24513b8280df
+	github.com/KRUL-marketplace/product-catalog-service v0.0.0-20240605160445-378c2d1cbfb1
+	github.com/Masterminds/squirrel v1.5.4
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang/protobuf v1.5.4
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0
-	github.com/jackc/pgconn v1.14.3
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/joho/godotenv v1.5.1
 	github.com/pkg/errors v0.9.1
@@ -18,15 +20,11 @@ require (
 )
 
 require (
-	github.com/KRUL-marketplace/product-catalog-service v0.0.0-20240605160445-378c2d1cbfb1 // indirect
-	github.com/Masterminds/squirrel v1.5.4 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/go-redis/redis/v8 v8.11.5 // indirect
-	github.com/google/uuid v1.6.0 // indirect
-	github.com/gosimple/slug v1.14.0 // indirect
-	github.com/gosimple/unidecode v1.0.1 // indirect
+	github.com/georgysavva/scany v1.2.2 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
+	github.com/jackc/pgconn v1.14.3 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgproto3/v2 v2.3.3 // indirect
@@ -35,11 +33,9 @@ require (
 	github.com/jackc/puddle v1.3.0 // indirect
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
-	github.com/lib/pq v1.10.9 // indirect
 	golang.org/x/crypto v0.24.0 // indirect
 	golang.org/x/net v0.26.0 // indirect
 	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240604185151-ef581f913117 // indirect
-	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.4.0 // indirect
 )

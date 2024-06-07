@@ -1,12 +1,12 @@
 package repository
 
 import (
-	"cart-service/client/db"
 	"cart-service/internal/converter"
 	"cart-service/internal/repository/model"
 	"context"
 	"database/sql"
 	"encoding/json"
+	"github.com/KRUL-marketplace/common-libs/pkg/client/db"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/go-redis/redis/v8"
 	"github.com/pkg/errors"
