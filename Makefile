@@ -30,6 +30,7 @@ get-deps:
 	go get -u github.com/rakyll/statik
 	go get -u github.com/go-redis/redis/v8
 	go get -u github.com/KRUL-marketplace/product-catalog-service
+	go get -u github.com/KRUL-marketplace/common-libs
 
 generate-cart-service-api:
 	mkdir -p pkg

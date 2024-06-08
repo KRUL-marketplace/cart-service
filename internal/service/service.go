@@ -1,10 +1,10 @@
 package service
 
 import (
-	"cart-service/client/db"
 	"cart-service/internal/repository"
 	"cart-service/internal/repository/model"
 	"context"
+	"github.com/KRUL-marketplace/common-libs/pkg/client/db"
 )
 
 type cartService struct {
