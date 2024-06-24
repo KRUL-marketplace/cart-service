@@ -1,8 +1,8 @@
 package api
 
 import (
-	"cart-service/internal/service"
-	desc "cart-service/pkg/cart-service"
+	"github.com/KRUL-marketplace/cart-service/internal/service"
+	desc "github.com/KRUL-marketplace/cart-service/pkg/cart-service"
 )
 
 type Implementation struct {

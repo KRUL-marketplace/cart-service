@@ -1,4 +1,4 @@
-module cart-service
+module github.com/KRUL-marketplace/cart-service
 
 go 1.22.4
 

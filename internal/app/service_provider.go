@@ -1,12 +1,12 @@
 package app
 
 import (
-	"cart-service/internal/api"
-	"cart-service/internal/config"
-	"cart-service/internal/connector/product_catalog_service"
-	"cart-service/internal/repository"
-	"cart-service/internal/service"
 	"context"
+	"github.com/KRUL-marketplace/cart-service/internal/api"
+	"github.com/KRUL-marketplace/cart-service/internal/config"
+	"github.com/KRUL-marketplace/cart-service/internal/connector/product_catalog_service"
+	"github.com/KRUL-marketplace/cart-service/internal/repository"
+	"github.com/KRUL-marketplace/cart-service/internal/service"
 	"github.com/KRUL-marketplace/common-libs/pkg/client/db"
 	"github.com/KRUL-marketplace/common-libs/pkg/client/db/pg"
 	"github.com/KRUL-marketplace/common-libs/pkg/client/db/transaction"

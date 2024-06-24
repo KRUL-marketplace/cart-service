@@ -1,8 +1,8 @@
 package service
 
 import (
-	"cart-service/internal/repository/model"
 	"context"
+	"github.com/KRUL-marketplace/cart-service/internal/repository/model"
 )
 
 func (s *cartService) Delete(ctx context.Context, req *model.DeleteProductRequest) (string, error) {

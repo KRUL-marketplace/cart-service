@@ -1,10 +1,10 @@
 package app
 
 import (
-	"cart-service/internal/config"
-	desc "cart-service/pkg/cart-service"
-	_ "cart-service/statik"
 	"context"
+	"github.com/KRUL-marketplace/cart-service/internal/config"
+	desc "github.com/KRUL-marketplace/cart-service/pkg/cart-service"
+	_ "github.com/KRUL-marketplace/cart-service/statik"
 	"github.com/KRUL-marketplace/common-libs/pkg/closer"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rakyll/statik/fs"
