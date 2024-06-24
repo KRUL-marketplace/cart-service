@@ -1,9 +1,9 @@
 package converter
 
 import (
-	"cart-service/internal/repository/model"
-	desc "cart-service/pkg/cart-service"
 	"database/sql"
+	"github.com/KRUL-marketplace/cart-service/internal/repository/model"
+	desc "github.com/KRUL-marketplace/cart-service/pkg/cart-service"
 	product_service "github.com/KRUL-marketplace/product-catalog-service/pkg/product-catalog-service"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"time"

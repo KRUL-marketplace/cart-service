@@ -1,9 +1,9 @@
 package api
 
 import (
-	"cart-service/internal/converter"
-	desc "cart-service/pkg/cart-service"
 	"context"
+	"github.com/KRUL-marketplace/cart-service/internal/converter"
+	desc "github.com/KRUL-marketplace/cart-service/pkg/cart-service"
 )
 
 func (i *Implementation) GetUserCart(ctx context.Context, req *desc.GetUserCartRequest) (*desc.GetUserCartResponse, error) {

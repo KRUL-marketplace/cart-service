@@ -1,9 +1,9 @@
 package service
 
 import (
-	"cart-service/internal/repository"
-	"cart-service/internal/repository/model"
 	"context"
+	"github.com/KRUL-marketplace/cart-service/internal/repository"
+	"github.com/KRUL-marketplace/cart-service/internal/repository/model"
 	"github.com/KRUL-marketplace/common-libs/pkg/client/db"
 )
 

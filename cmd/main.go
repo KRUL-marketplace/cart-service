@@ -1,8 +1,8 @@
 package main
 
 import (
-	"cart-service/internal/app"
 	"context"
+	"github.com/KRUL-marketplace/cart-service/internal/app"
 	"log"
 )
 
