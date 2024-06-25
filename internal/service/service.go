@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"github.com/KRUL-marketplace/cart-service/internal/repository"
-	"github.com/KRUL-marketplace/cart-service/internal/repository/model"
+	"github.com/KRUL-marketplace/cart-service/model"
 	"github.com/KRUL-marketplace/common-libs/pkg/client/db"
 )
 

@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"github.com/KRUL-marketplace/cart-service/internal/connector/product_catalog_service"
-	"github.com/KRUL-marketplace/cart-service/internal/repository/model"
+	"github.com/KRUL-marketplace/cart-service/model"
 	"github.com/KRUL-marketplace/common-libs/pkg/client/db"
 	"github.com/go-redis/redis/v8"
 )
