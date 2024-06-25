@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/KRUL-marketplace/cart-service/internal/repository/model"
+	"github.com/KRUL-marketplace/cart-service/model"
 )
 
 func (s *cartService) GetUserCart(ctx context.Context, userId string) (*model.Cart, error) {
